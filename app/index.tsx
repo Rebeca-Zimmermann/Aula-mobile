@@ -26,24 +26,91 @@ const Estilo = StyleSheet.create({
 
 /* --------------------AULA 2---------------------- */
 
-import { TextInput, View, Text, Pressable, StyleSheet } from "react-native";
+import { View } from "react-native";
 
-import styled from "styled-components/native"
+import styled from "styled-components/native";
+import Title from "../components/Titulo/Titulo";
+import { useEffect, useState } from "react";
+import InputTexto from "@/components/Input/input";
+import { Input } from "react-native-elements";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Login()
 {
+
+    const [email, setEmail] = useState('exemplo@exemplo.com')
+    const [erroEmail, setErroEmail] = useState(false)
+
+    const [senha, setSenha] = useState('@Example123')
+    const [erroSenha, setErroSenha] = useState(false)
+    const [mostrarSenha, setMostrarSenha] = useState(false);
+
+    useEffect(() => {
+       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+       if(emailRegex.test(email)){
+        setErroEmail(false)
+       }
+       else{
+        setErroEmail(true)
+       }
+    }, [email])
+
+    useEffect(() => {
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+
+        if(passwordRegex.test(senha)){
+            setErroSenha(false)
+        }
+        else{
+            setErroSenha(true)
+        }
+    })
+
     return(
         <Tela>
-            <View>
-                <Titulo>ENTRAR</Titulo>
-            </View>
+            <Title 
+                text={"Entrar"}
+                flag={true}
+            />
+            <Title
+                text={"Bem vindo ao app!"}
+                flag={false}
+            />
             <ContainerCampoTexto>
-                <Campo_Texto
+                <View >
+                <InputTexto
+                    erro={erroEmail}
                     placeholder="Digite seu email"
+                    onChangeText={text => setEmail(text)}
                 />
-                <Campo_Texto
+                {erroEmail ? <TextErrorHint>Email Inválido</TextErrorHint> : null }
+                </View>
+
+                <View>
+                <Input
                     placeholder="Digite sua senha"
+                    defaultValue="" 
+                    onChangeText={(text) => setSenha(text)}
+                    secureTextEntry={!mostrarSenha}
+                    rightIcon={
+                      <MaterialIcons
+                        name={mostrarSenha ? "visibility" : "visibility-off"}
+                        size={24}
+                        color="#FAF4D3"
+                        onPress={() => setMostrarSenha(!mostrarSenha)}
+                      />
+                    }
+                    inputStyle={{ color: "#FAF4D3" }}
+                    containerStyle={{ marginBottom: 10 }}   
+                    inputContainerStyle={{
+                        borderBottomWidth: 2,
+                        borderBottomColor: "#FAF4D3", // Linha de baixo na mesma cor do design
+                      }}
                 />
+                {erroSenha ? <TextErrorHint>Senha Inválida</TextErrorHint> : null }
+                </View>
+
             </ContainerCampoTexto>
             
             <ContainerBotoes>
@@ -73,12 +140,6 @@ const Titulo = styled.Text`
     margin-top: 240px;
     margin-bottom: 42px;
 `
-const Campo_Texto = styled.TextInput`
-    background-color: #FAF4D3;
-    font-size: 16px;
-    padding: 20px;
-    border-radius: 05px;
-`
 const ContainerCampoTexto = styled.View`
     gap: 20px;
 `
@@ -105,6 +166,11 @@ const Links = styled.Text`
     color: #FAF4D3;
     font-size: 16px;
     font-weight: bold;
+`
+
+const TextErrorHint = styled.Text`
+    font-size: 16px;
+    color: #E63946;
 `
 
 /*USANDO STYLESHEET*/
